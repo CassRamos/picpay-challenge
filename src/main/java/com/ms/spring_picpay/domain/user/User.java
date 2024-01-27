@@ -1,4 +1,4 @@
-package com.ms.spring_picpay.domain;
+package com.ms.spring_picpay.domain.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
