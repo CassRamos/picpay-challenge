@@ -2,10 +2,13 @@ package com.ms.spring_picpay.services;
 
 import com.ms.spring_picpay.domain.user.User;
 import com.ms.spring_picpay.domain.user.UserType;
+import com.ms.spring_picpay.dtos.UserDTO;
 import com.ms.spring_picpay.repositores.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -29,6 +32,16 @@ public class UserService {
         return this.userRepository
                 .findUserById(id)
                 .orElseThrow(() -> new Exception("User not found"));
+    }
+
+    public User createUser(UserDTO data) {
+        var newUser = new User(data);
+        this.saveUser(newUser);
+        return newUser;
+    }
+
+    public List<User> getAllUsers() {
+        return this.userRepository.findAll();
     }
 
     public void saveUser(User user) {
