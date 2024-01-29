@@ -23,7 +23,7 @@ public class UserService {
         if (sender.getUserType() == UserType.MERCHANT) {
             throw new Exception("Merchant user type is not allowed to make a transaction.");
         }
-        if (sender.getBalance().compareTo(amount) <= 0) {
+        if (sender.getBalance().compareTo(amount) < 0) {
             throw new Exception("Insufficient balance");
         }
     }
