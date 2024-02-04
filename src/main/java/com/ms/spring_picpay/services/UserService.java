@@ -5,7 +5,6 @@ import com.ms.spring_picpay.domain.user.UserType;
 import com.ms.spring_picpay.dtos.UserDTO;
 import com.ms.spring_picpay.repositores.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.util.List;

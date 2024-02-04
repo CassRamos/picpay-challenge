@@ -4,14 +4,10 @@ import com.ms.spring_picpay.domain.transaction.Transaction;
 import com.ms.spring_picpay.domain.user.User;
 import com.ms.spring_picpay.dtos.TransactionDTO;
 import com.ms.spring_picpay.repositores.TransactionRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Service
 public class TransactionService {
@@ -19,13 +15,15 @@ public class TransactionService {
     final UserService userService;
     final TransactionRepository transactionRepository;
     final NotificationService notificationService;
+    final AuthorizationService authorizationService;
 
     final RestTemplate restTemplate; //spring class for consuming rest APIs
 
-    public TransactionService(UserService userService, TransactionRepository transactionRepository, NotificationService notificationService, RestTemplate restTemplate) {
+    public TransactionService(UserService userService, TransactionRepository transactionRepository, NotificationService notificationService, AuthorizationService authorizationService, RestTemplate restTemplate) {
         this.userService = userService;
         this.transactionRepository = transactionRepository;
         this.notificationService = notificationService;
+        this.authorizationService = authorizationService;
         this.restTemplate = restTemplate;
     }
 
@@ -35,7 +33,7 @@ public class TransactionService {
 
         userService.validateTransaction(sender, transaction.value());
 
-        boolean isAuthorized = this.authorizeTransaction(sender, transaction.value());
+        boolean isAuthorized = this.authorizationService.authorizeTransaction(sender, transaction.value());
         if (!isAuthorized) {
             throw new Exception("Transaction not authorized");
         }
@@ -57,14 +55,5 @@ public class TransactionService {
         this.notificationService.sendNotification(receiver, "Transaction successfully received");
 
         return newTransaction;
-    }
-
-    public boolean authorizeTransaction(User sender, BigDecimal value) {
-        ResponseEntity<Map> authorizeResponse = restTemplate.getForEntity("https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc", Map.class);
-
-        if (authorizeResponse.getStatusCode() == HttpStatus.OK) {
-            String message = (String) authorizeResponse.getBody().get("message");
-            return "Autorizado".equalsIgnoreCase(message);
-        } else return false;
     }
 }
